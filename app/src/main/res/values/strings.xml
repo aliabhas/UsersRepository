@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">UserRepositories</string>
+    <string name="home_screen">UserRepositories</string>
+    <string name="detail_screen">Repository Details</string>
+    <string name="repo_avatar">Repo Avatar</string>
+    <string name="commits">Commits:</string>
+    <string name="repository_details_not_correct">Repositories details are incorrect for loading data</string>
+
+</resources>

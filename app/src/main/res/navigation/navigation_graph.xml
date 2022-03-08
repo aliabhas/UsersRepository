@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@+id/homeDest">
+
+    <fragment
+        android:id="@+id/homeDest"
+        android:name="aliabbas.com.userrepositories.ui.fragments.user_home_fragment.UserRepositoriesFragment"
+        android:label="@string/home_screen"
+        tools:layout="@layout/user_repositories_screen">
+        <action
+            android:id="@+id/navigateTodetailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="aliabbas.com.userrepositories.ui.fragments.user_detail_fragment.RepositoryCommitsDetailFragment"
+        android:label="@string/detail_screen"
+        tools:layout="@layout/user_repository_detail_screen">
+        <argument
+            android:name="userRepository"
+            app:argType="aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable" />
+
+    </fragment>
+</navigation>
