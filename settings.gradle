@@ -12,7 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "MoviesRepository"
+rootProject.name = "UsersRepository"
 include ':app'
 include ':shared'
 include ':central'
