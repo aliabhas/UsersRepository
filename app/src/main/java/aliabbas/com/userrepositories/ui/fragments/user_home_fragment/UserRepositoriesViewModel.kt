@@ -1,11 +1,11 @@
 package aliabbas.com.userrepositories.ui.fragments.user_home_fragment
 
+import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
 import aliabbas.com.userrepositories.R
 import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.FavouriteRepositoryUseCase
 import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.FetchUserHomeUseCase
 import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.HideRepositoryUseCase
 import aliabbas.com.userrepositories.shared.result.ApiResponse
-import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.ImageView
@@ -63,7 +63,17 @@ class UserRepositoriesViewModel @Inject constructor(
 
     public fun favouriteRepository(userRepositoriesModel: UserRepositoriesTable) {
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
-            favouriteRepositoryUseCase.execute(userRepositoriesModel)
+            val userRepositoryIsFavorite = favouriteRepositoryUseCase.execute(userRepositoriesModel)
+            val isFavourite = if (userRepositoriesModel.isFavourite == 0) 1 else 0
+            userRepositoriesModel.isFavourite = isFavourite
+            if (userRepositoryIsFavorite > 0) {
+                val filterIndexed =
+                    (_listUserRepositories.value as List<UserRepositoriesTable>).indexOfFirst{ userRepositoriesTable ->
+                        userRepositoriesTable.fullName == userRepositoriesModel.fullName
+                    }
+                (_listUserRepositories.value as ArrayList<UserRepositoriesTable>)[filterIndexed] =
+                    userRepositoriesModel
+            }
         }
 
     }
