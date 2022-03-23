@@ -41,7 +41,7 @@ class UserRepositoriesViewModel @Inject constructor(
     var listUserRepositories: MutableLiveData<ApiResponse> = _listUserRepositories
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        Log.i("lolz", ": ${exception.message}")
+        Log.i("Error Occureed", ": ${exception.message}")
         //_listUserRepositories.value = ApiResponse.ApiFailure(exception.message.toString())
     }
 
