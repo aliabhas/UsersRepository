@@ -18,8 +18,9 @@ class RepositoriesLocalDataSourceImpl @Inject constructor(
 
     override suspend fun favouriteUserRepository(userRepositories: UserRepositoriesTable): Int {
         val isFavourite = if (userRepositories.isFavourite == 0) 1 else 0
-        return appDatabase.userRepositoriesDao()
+         appDatabase.userRepositoriesDao()
             .favouriteRepository(isFavourite, userRepositories.fullName)
+        return isFavourite
     }
 
     override suspend fun hideUnHideUserRepository(userRepositories: UserRepositoriesTable): Int {

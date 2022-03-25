@@ -70,7 +70,16 @@ class UserRepositoriesViewModel @Inject constructor(
 
     fun favouriteRepository(userRepositoriesModel: UserRepositoriesTable) {
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
-            favouriteRepositoryUseCase.execute(userRepositoriesModel)
+            val execute = favouriteRepositoryUseCase.execute(userRepositoriesModel)
+            ((_listUserRepositories.value as ApiResponse.ApiResponseSuccess).responseData as List<UserRepositoriesTable>).first {
+                it.fullName.contentEquals(userRepositoriesModel.fullName)
+            }.isFavourite = execute
+        }
+    }
+
+    fun updateFlow(userRepositoriesTable: UserRepositoriesTable) {
+        viewModelScope.launch {
+
         }
     }
 

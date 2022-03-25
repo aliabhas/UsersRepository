@@ -21,8 +21,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class UserRepositoriesFragment : Fragment() {
 
@@ -51,19 +53,19 @@ class UserRepositoriesFragment : Fragment() {
 
                 when (apiResponse) {
                     is ApiResponse.ApiResponseSuccess -> {
-                        populateUserRepositoriesList(
+                        PopulateUserRepositoriesList(
                             isLoading = false,
                             listOfUserRepositories = (apiResponse as ApiResponse.ApiResponseSuccess).responseData as List<UserRepositoriesTable>
                         )
                     }
                     is ApiResponse.ApiFailure -> {
-                        populateUserRepositoriesList(
+                        PopulateUserRepositoriesList(
                             isLoading = false,
                             listOfUserRepositories = emptyList()
                         )
                     }
                     is ApiResponse.ProgressLoadingState -> {
-                        populateUserRepositoriesList(
+                        PopulateUserRepositoriesList(
                             isLoading = true,
                             listOfUserRepositories = emptyList()
                         )
@@ -76,7 +78,7 @@ class UserRepositoriesFragment : Fragment() {
     }
 
     @Composable
-    fun populateUserRepositoriesList(
+    fun PopulateUserRepositoriesList(
         isLoading: Boolean,
         listOfUserRepositories: List<UserRepositoriesTable>
     ) {
@@ -96,6 +98,7 @@ class UserRepositoriesFragment : Fragment() {
                 },
                 onFavouriteClicked = {
                     userRepositoriesViewModel.favouriteRepository(it)
+                    userRepositoriesViewModel.updateFlow(it)
                 },
                 onHideRepositoryClicked = {
                     userRepositoriesViewModel.hideUnHideRepository(it)

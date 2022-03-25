@@ -2,6 +2,8 @@ package aliabbas.com.userrepositories.user_repositories
 
 import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
 import aliabbas.com.scalablecodebaseapp.model.user_repository.OwnerModel
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.*
+import aliabbas.com.userrepositories.shared.result.ApiResponse
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
@@ -12,11 +14,11 @@ class FakeUserRepositoriesUseCaseTest {
     lateinit var userRepositoriesTable: UserRepositoriesTable
     private lateinit var fakeUserRepositories: FakeUserRepositories
 
-    private lateinit var fakeUserRepositoriesUseCase: FakeUserRepositoriesUseCase
+    private lateinit var fakeUserRepositoriesUseCase: FetchUserHomeUseCase
 
-    private lateinit var fakeFavoriteRepositoryUseCase: FakeFavoriteRepositoryUseCase
+    private lateinit var fakeFavoriteRepositoryUseCase: FavouriteRepositoryUseCase
 
-    private lateinit var fakeHideRepositoryUseCase: FakeHideRepositoryUseCase
+    private lateinit var fakeHideRepositoryUseCase: HideRepositoryUseCase
 
 
     @Before
@@ -26,15 +28,15 @@ class FakeUserRepositoriesUseCaseTest {
             "", 0, 0
         )
         fakeUserRepositories = FakeUserRepositories()
-        fakeUserRepositoriesUseCase = FakeUserRepositoriesUseCase(fakeUserRepositories)
-        fakeFavoriteRepositoryUseCase = FakeFavoriteRepositoryUseCase(fakeUserRepositories)
-        fakeHideRepositoryUseCase = FakeHideRepositoryUseCase(fakeUserRepositories)
+        fakeUserRepositoriesUseCase = FetchUserHomeUseCaseImpl(fakeUserRepositories)
+        fakeFavoriteRepositoryUseCase = FavouriteRepositoryUseCaseImpl(fakeUserRepositories)
+        fakeHideRepositoryUseCase = HideRepositoryUseCaseImpl(fakeUserRepositories)
     }
 
     @Test
     fun getUserRepositoryTest() = runBlocking {
-        val count = fakeUserRepositoriesUseCase.execute().collect {
-            assertThat((it.responseData as List<*>).size == 2).isTrue()
+        fakeUserRepositoriesUseCase.execute().collect {
+            assertThat(((it as ApiResponse.ApiResponseSuccess).responseData as List<*>).size == 2).isTrue()
         }
 
     }
@@ -45,7 +47,7 @@ class FakeUserRepositoriesUseCaseTest {
         val filteredResult = fakeUserRepositories.listUserRepositories.firstOrNull {
             it.fullName.contentEquals(
                 userRepositoriesTable.fullName
-            ) && it.isFavourite==1
+            ) && it.isFavourite == 1
         }
         assertThat(filteredResult).isNotNull()
     }
@@ -56,7 +58,7 @@ class FakeUserRepositoriesUseCaseTest {
         val filteredResult = fakeUserRepositories.listUserRepositories.firstOrNull {
             it.fullName.contentEquals(
                 userRepositoriesTable.fullName
-            ) && it.hideUnHideRepository==1
+            ) && it.hideUnHideRepository == 1
         }
         assertThat(filteredResult).isNotNull()
     }
