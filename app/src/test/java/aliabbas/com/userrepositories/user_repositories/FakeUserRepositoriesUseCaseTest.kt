@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 
 class FakeUserRepositoriesUseCaseTest {
-    lateinit var userRepositoriesTable: UserRepositoriesTable
+    private lateinit var userRepositoriesTable: UserRepositoriesTable
     private lateinit var fakeUserRepositories: FakeUserRepositories
 
     private lateinit var fakeUserRepositoriesUseCase: FetchUserHomeUseCaseImpl
@@ -45,7 +45,7 @@ class FakeUserRepositoriesUseCaseTest {
 
     @Test
     fun makeRepositoryFavoriteTest() = runBlocking {
-        val execute = fakeFavoriteRepositoryUseCase(userRepositoriesTable)
+        fakeFavoriteRepositoryUseCase(userRepositoriesTable)
         val filteredResult = fakeUserRepositories.listUserRepositories.firstOrNull {
             it.fullName.contentEquals(
                 userRepositoriesTable.fullName
@@ -56,7 +56,7 @@ class FakeUserRepositoriesUseCaseTest {
 
     @Test
     fun hideRepositoryTest() = runBlocking {
-        val execute = fakeHideRepositoryUseCase(userRepositoriesTable)
+        fakeHideRepositoryUseCase(userRepositoriesTable)
         val filteredResult = fakeUserRepositories.listUserRepositories.firstOrNull {
             it.fullName.contentEquals(
                 userRepositoriesTable.fullName
