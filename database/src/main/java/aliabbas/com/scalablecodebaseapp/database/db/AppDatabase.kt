@@ -38,16 +38,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun repositoriesCommitsDao(): RepositoryCommitsDao
 
     companion object {
-        private const val databaseName = "AppData.db"
+        const val databaseName = "AppData.db"
 
-        //Changing for testing build
-        fun buildDatabase(context: Context): AppDatabase {
-            // Since Room is only used for FTS, destructive migration is enough because the tables
-            // are cleared every time the app launches.
-            // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
-            return Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
-                .fallbackToDestructiveMigration()
-                .build()
-        }
     }
 }

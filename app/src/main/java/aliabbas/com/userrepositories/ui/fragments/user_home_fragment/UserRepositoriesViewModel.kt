@@ -10,12 +10,17 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -37,45 +42,36 @@ class UserRepositoriesViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _listUserRepositories =
-        MutableLiveData<ApiResponse>(ApiResponse.ProgressLoadingState)
-    var listUserRepositories: MutableLiveData<ApiResponse> = _listUserRepositories
+        MutableStateFlow<ApiResponse>(ApiResponse.ProgressLoadingState)
+    var listUserRepositories: StateFlow<ApiResponse> = _listUserRepositories
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
         Log.i("Error Occureed", ": ${exception.message}")
-        //_listUserRepositories.value = ApiResponse.ApiFailure(exception.message.toString())
     }
 
     init {
+        getUserRepositories()
+    }
+
+    fun getUserRepositories() {
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
-            val userRepositoryResponse = userRepository.execute()
-            withContext(Dispatchers.Main) {
-                _listUserRepositories.value = userRepositoryResponse
+            userRepository.execute().collect {
+                _listUserRepositories.emit(it)
             }
         }
     }
 
-    public fun hideUnHideRepository(userRepositoriesModel: UserRepositoriesTable) {
+    fun hideUnHideRepository(userRepositoriesModel: UserRepositoriesTable) {
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             hideRepositoryUseCase.execute(userRepositoriesModel)
         }
 
     }
 
-    public fun favouriteRepository(userRepositoriesModel: UserRepositoriesTable) {
+    fun favouriteRepository(userRepositoriesModel: UserRepositoriesTable) {
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
-            val userRepositoryIsFavorite = favouriteRepositoryUseCase.execute(userRepositoriesModel)
-            val isFavourite = if (userRepositoriesModel.isFavourite == 0) 1 else 0
-            userRepositoriesModel.isFavourite = isFavourite
-            if (userRepositoryIsFavorite > 0) {
-                val filterIndexed =
-                    (_listUserRepositories.value as List<UserRepositoriesTable>).indexOfFirst{ userRepositoriesTable ->
-                        userRepositoriesTable.fullName == userRepositoriesModel.fullName
-                    }
-                (_listUserRepositories.value as ArrayList<UserRepositoriesTable>)[filterIndexed] =
-                    userRepositoriesModel
-            }
+            favouriteRepositoryUseCase.execute(userRepositoriesModel)
         }
-
     }
 
     override fun onCleared() {

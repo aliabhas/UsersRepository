@@ -22,5 +22,5 @@ data class UserRepositoriesTable(
     val owner: @kotlinx.parcelize.RawValue OwnerModel? = null,
     val description: String? = null,
     var isFavourite: Int = 0,
-    val hideUnHideRepository: Int = 0
+    var hideUnHideRepository: Int = 0
 ) : Parcelable

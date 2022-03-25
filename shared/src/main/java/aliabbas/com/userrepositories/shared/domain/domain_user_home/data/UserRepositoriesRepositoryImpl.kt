@@ -1,14 +1,16 @@
 package aliabbas.com.userrepositories.shared.domain.domain_user_home.data
 
+import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
 import aliabbas.com.userrepositories.shared.domain.domain_user_home.data.datasources.local.RepositoriesLocalDataSource
 import aliabbas.com.userrepositories.shared.domain.domain_user_home.data.datasources.remote.RepositoryRemoteDataSource
 import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.mapper.UserRepositoriesMapper
 import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.repository.UserRepository
 import aliabbas.com.userrepositories.shared.result.ApiResponse
 import aliabbas.com.userrepositories.shared.util.Util
-import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 
@@ -23,7 +25,7 @@ class UserRepositoriesRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun getListUserRepositoriesLiveData(): ApiResponse {
+    override suspend fun getListUserRepositoriesLiveData(): Flow<ApiResponse> = flow {
         var apiResponse: ApiResponse
         if (Util.isNetworkAvailable(context)) {
             apiResponse = remoteDataSource.getListUserRepositories()
@@ -40,7 +42,7 @@ class UserRepositoriesRepositoryImpl @Inject constructor(
         (localDataSource.getUserRepositories()?.run {
             ApiResponse.ApiResponseSuccess(this)
         } ?: ApiResponse.ApiFailure("No Data Found")).also { apiResponse = it }
-        return apiResponse
+        emit(apiResponse)
     }
 
     override suspend fun makeRepositoryFavourite(userRepositoriesModel: UserRepositoriesTable): Int {

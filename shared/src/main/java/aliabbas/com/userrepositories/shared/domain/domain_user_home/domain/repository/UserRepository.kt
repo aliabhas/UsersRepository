@@ -2,6 +2,7 @@ package aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.repo
 
 import aliabbas.com.userrepositories.shared.result.ApiResponse
 import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created By Ali Abbas on on 20,December,2021
@@ -9,7 +10,7 @@ import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
  *
  */
 interface UserRepository {
-    suspend fun getListUserRepositoriesLiveData(): ApiResponse
+    suspend fun getListUserRepositoriesLiveData(): Flow<ApiResponse>
 
     suspend fun makeRepositoryFavourite(userRepositoriesModel: UserRepositoriesTable): Int
 

@@ -2,6 +2,7 @@ package aliabbas.com.scalablecodebaseapp.database.db.di
 
 import aliabbas.com.scalablecodebaseapp.database.db.AppDatabase
 import android.content.Context
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +22,8 @@ class DatabaseBindingModule {
 
     @Singleton
     @Provides
-    fun bindAppDataBaseReference(@ApplicationContext context: Context): AppDatabase {
-        return AppDatabase.buildDatabase(context)
-    }
+    fun bindAppDataBaseReference(@ApplicationContext context: Context) =
+        Room.databaseBuilder(context, AppDatabase::class.java, AppDatabase.databaseName)
+            .fallbackToDestructiveMigration()
+            .build()
 }

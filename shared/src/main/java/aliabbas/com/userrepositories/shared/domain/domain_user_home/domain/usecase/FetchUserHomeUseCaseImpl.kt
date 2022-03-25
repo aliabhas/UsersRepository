@@ -2,12 +2,13 @@ package aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usec
 
 import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.repository.UserRepository
 import aliabbas.com.userrepositories.shared.result.ApiResponse
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FetchUserHomeUseCaseImpl @Inject constructor(
     private var userRepository: UserRepository
 ) : FetchUserHomeUseCase {
-    override suspend fun execute(): ApiResponse {
+    override suspend fun execute(): Flow<ApiResponse> {
         return userRepository.getListUserRepositoriesLiveData()
     }
 

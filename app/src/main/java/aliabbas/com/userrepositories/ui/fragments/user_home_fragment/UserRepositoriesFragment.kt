@@ -1,26 +1,27 @@
 package aliabbas.com.userrepositories.ui.fragments.user_home_fragment
 
+import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
 import aliabbas.com.userrepositories.R
 import aliabbas.com.userrepositories.shared.result.ApiResponse
 import aliabbas.com.userrepositories.ui.compose_components.compose_view.SearchView
 import aliabbas.com.userrepositories.ui.compose_components.compose_view.UserRepositoriesList
-import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 
 @AndroidEntryPoint
 class UserRepositoriesFragment : Fragment() {
@@ -35,14 +36,24 @@ class UserRepositoriesFragment : Fragment() {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                var apiResponse = userRepositoriesViewModel.listUserRepositories
-                    .observeAsState().value
+                val listRepositoryCommitDetailsFlow = userRepositoriesViewModel.listUserRepositories
+                val lifecycleOwner = LocalLifecycleOwner.current
+                val listRepositoryCommitDetailsFlowLifecycleAware: Flow<ApiResponse> =
+                    remember(listRepositoryCommitDetailsFlow, lifecycleOwner) {
+                        listRepositoryCommitDetailsFlow.flowWithLifecycle(
+                            lifecycleOwner.lifecycle,
+                            Lifecycle.State.STARTED
+                        )
+                    }
+                val apiResponse by listRepositoryCommitDetailsFlowLifecycleAware.collectAsState(
+                    ApiResponse.ProgressLoadingState
+                )
 
                 when (apiResponse) {
                     is ApiResponse.ApiResponseSuccess -> {
                         populateUserRepositoriesList(
                             isLoading = false,
-                            listOfUserRepositories = apiResponse.responseData as List<UserRepositoriesTable>
+                            listOfUserRepositories = (apiResponse as ApiResponse.ApiResponseSuccess).responseData as List<UserRepositoriesTable>
                         )
                     }
                     is ApiResponse.ApiFailure -> {
@@ -91,7 +102,7 @@ class UserRepositoriesFragment : Fragment() {
 
                 },
                 state = textState
-                )
+            )
         }
     }
 }
