@@ -1,13 +1,13 @@
 package aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase
 
-import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.repository.UserRepository
 import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.repository.UserRepository
 import javax.inject.Inject
 
 class HideRepositoryUseCaseImpl @Inject constructor(
     private var userRepository: UserRepository
-) : HideRepositoryUseCase {
-    override suspend fun execute(userRepositoriesModel: UserRepositoriesTable): Int {
+) {
+    suspend operator fun invoke(userRepositoriesModel: UserRepositoriesTable): Int {
         return userRepository.hideUnHideRepository(userRepositoriesModel)
     }
 

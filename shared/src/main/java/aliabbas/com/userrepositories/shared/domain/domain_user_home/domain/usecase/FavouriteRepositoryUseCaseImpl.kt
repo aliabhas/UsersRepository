@@ -6,8 +6,8 @@ import javax.inject.Inject
 
 class FavouriteRepositoryUseCaseImpl @Inject constructor(
     private var userRepository: UserRepository
-) : FavouriteRepositoryUseCase {
-    override suspend fun execute(userRepositoriesModel: UserRepositoriesTable): Int {
+)  {
+    suspend operator fun invoke(userRepositoriesModel: UserRepositoriesTable): Int {
         return userRepository.makeRepositoryFavourite(userRepositoriesModel)
     }
 

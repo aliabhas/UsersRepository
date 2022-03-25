@@ -2,9 +2,7 @@ package aliabbas.com.userrepositories.ui.fragments.user_home_fragment
 
 import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
 import aliabbas.com.userrepositories.R
-import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.FavouriteRepositoryUseCase
-import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.FetchUserHomeUseCase
-import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.HideRepositoryUseCase
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.UserRepositoriesUseCases
 import aliabbas.com.userrepositories.shared.result.ApiResponse
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -36,9 +34,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserRepositoriesViewModel @Inject constructor(
-    private var userRepository: FetchUserHomeUseCase,
-    private var favouriteRepositoryUseCase: FavouriteRepositoryUseCase,
-    private var hideRepositoryUseCase: HideRepositoryUseCase
+    private var UserRepositoriesUseCases: UserRepositoriesUseCases
 ) : ViewModel() {
 
     private val _listUserRepositories =
@@ -55,7 +51,7 @@ class UserRepositoriesViewModel @Inject constructor(
 
     private fun getUserRepositories() {
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
-            userRepository.execute().collect {
+            UserRepositoriesUseCases.userRepository().collect {
                 _listUserRepositories.emit(it)
             }
         }
@@ -63,14 +59,15 @@ class UserRepositoriesViewModel @Inject constructor(
 
     fun hideUnHideRepository(userRepositoriesModel: UserRepositoriesTable) {
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
-            hideRepositoryUseCase.execute(userRepositoriesModel)
+            UserRepositoriesUseCases.hideRepositoryUseCase(userRepositoriesModel)
         }
 
     }
 
     fun favouriteRepository(userRepositoriesModel: UserRepositoriesTable) {
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
-            val execute = favouriteRepositoryUseCase.execute(userRepositoriesModel)
+            val execute =
+                UserRepositoriesUseCases.favouriteRepositoryUseCase(userRepositoriesModel)
             ((_listUserRepositories.value as ApiResponse.ApiResponseSuccess).responseData as List<UserRepositoriesTable>).first {
                 it.fullName.contentEquals(userRepositoriesModel.fullName)
             }.isFavourite = execute

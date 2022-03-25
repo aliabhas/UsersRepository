@@ -2,7 +2,9 @@ package aliabbas.com.userrepositories.user_repositories
 
 import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
 import aliabbas.com.scalablecodebaseapp.model.user_repository.OwnerModel
-import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.*
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.FavouriteRepositoryUseCaseImpl
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.FetchUserHomeUseCaseImpl
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.HideRepositoryUseCaseImpl
 import aliabbas.com.userrepositories.shared.result.ApiResponse
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.collect
@@ -14,11 +16,11 @@ class FakeUserRepositoriesUseCaseTest {
     lateinit var userRepositoriesTable: UserRepositoriesTable
     private lateinit var fakeUserRepositories: FakeUserRepositories
 
-    private lateinit var fakeUserRepositoriesUseCase: FetchUserHomeUseCase
+    private lateinit var fakeUserRepositoriesUseCase: FetchUserHomeUseCaseImpl
 
-    private lateinit var fakeFavoriteRepositoryUseCase: FavouriteRepositoryUseCase
+    private lateinit var fakeFavoriteRepositoryUseCase: FavouriteRepositoryUseCaseImpl
 
-    private lateinit var fakeHideRepositoryUseCase: HideRepositoryUseCase
+    private lateinit var fakeHideRepositoryUseCase: HideRepositoryUseCaseImpl
 
 
     @Before
@@ -35,7 +37,7 @@ class FakeUserRepositoriesUseCaseTest {
 
     @Test
     fun getUserRepositoryTest() = runBlocking {
-        fakeUserRepositoriesUseCase.execute().collect {
+        fakeUserRepositoriesUseCase().collect {
             assertThat(((it as ApiResponse.ApiResponseSuccess).responseData as List<*>).size == 2).isTrue()
         }
 
@@ -43,7 +45,7 @@ class FakeUserRepositoriesUseCaseTest {
 
     @Test
     fun makeRepositoryFavoriteTest() = runBlocking {
-        val execute = fakeFavoriteRepositoryUseCase.execute(userRepositoriesTable)
+        val execute = fakeFavoriteRepositoryUseCase(userRepositoriesTable)
         val filteredResult = fakeUserRepositories.listUserRepositories.firstOrNull {
             it.fullName.contentEquals(
                 userRepositoriesTable.fullName
@@ -54,7 +56,7 @@ class FakeUserRepositoriesUseCaseTest {
 
     @Test
     fun hideRepositoryTest() = runBlocking {
-        val execute = fakeHideRepositoryUseCase.execute(userRepositoriesTable)
+        val execute = fakeHideRepositoryUseCase(userRepositoriesTable)
         val filteredResult = fakeUserRepositories.listUserRepositories.firstOrNull {
             it.fullName.contentEquals(
                 userRepositoriesTable.fullName

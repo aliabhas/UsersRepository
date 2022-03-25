@@ -4,7 +4,10 @@ import aliabbas.com.userrepositories.shared.domain.domain_repository_commit.doma
 import aliabbas.com.userrepositories.shared.domain.domain_repository_commit.domain.usecase.RepositoryCommitsUseCase
 import aliabbas.com.userrepositories.shared.domain.domain_repository_commit.domain.usecase.RepositoryCommitsUseCaseImpl
 import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.repository.UserRepository
-import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.*
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.FavouriteRepositoryUseCaseImpl
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.FetchUserHomeUseCaseImpl
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.HideRepositoryUseCaseImpl
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase.UserRepositoriesUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,25 +22,35 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @InstallIn(ViewModelComponent::class)
 @Module
 object UseCaseBindingModule {
-    @ViewModelScoped
+    /*@ViewModelScoped
     @Provides
     fun bindRepository(userRepository: UserRepository)
-            : FetchUserHomeUseCase {
+            : FetchUserHomeUseCaseImpl {
         return FetchUserHomeUseCaseImpl(userRepository)
     }
 
     @ViewModelScoped
     @Provides
     fun bindFavouriteRepository(userRepository: UserRepository)
-            : FavouriteRepositoryUseCase {
+            : FavouriteRepositoryUseCaseImpl {
         return FavouriteRepositoryUseCaseImpl(userRepository)
     }
 
     @ViewModelScoped
     @Provides
     fun bindHideUnHideRepository(userRepository: UserRepository)
-            : HideRepositoryUseCase {
+            : HideRepositoryUseCaseImpl {
         return HideRepositoryUseCaseImpl(userRepository)
+    }*/
+
+    @ViewModelScoped
+    @Provides
+    fun provideUserRepositoryUseCases(userRepository: UserRepository): UserRepositoriesUseCases {
+        return UserRepositoriesUseCases(
+            FetchUserHomeUseCaseImpl(userRepository),
+            FavouriteRepositoryUseCaseImpl(userRepository),
+            HideRepositoryUseCaseImpl(userRepository)
+        )
     }
 
     @ViewModelScoped

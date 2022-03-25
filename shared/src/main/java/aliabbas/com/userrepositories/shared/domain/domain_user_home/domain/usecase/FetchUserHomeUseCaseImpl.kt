@@ -7,8 +7,8 @@ import javax.inject.Inject
 
 class FetchUserHomeUseCaseImpl @Inject constructor(
     private var userRepository: UserRepository
-) : FetchUserHomeUseCase {
-    override suspend fun execute(): Flow<ApiResponse> {
+) {
+    suspend operator fun invoke(): Flow<ApiResponse> {
         return userRepository.getListUserRepositoriesLiveData()
     }
 
