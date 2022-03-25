@@ -46,14 +46,14 @@ class UserRepositoriesViewModel @Inject constructor(
     var listUserRepositories: StateFlow<ApiResponse> = _listUserRepositories
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        Log.i("Error Occureed", ": ${exception.message}")
+        Log.i("Error Occurred", ": ${exception.message}")
     }
 
     init {
         getUserRepositories()
     }
 
-    fun getUserRepositories() {
+    private fun getUserRepositories() {
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             userRepository.execute().collect {
                 _listUserRepositories.emit(it)
