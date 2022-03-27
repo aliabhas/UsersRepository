@@ -1,14 +1,25 @@
 package aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.usecase
 
-import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.repository.UserRepository
 import aliabbas.com.scalablecodebaseapp.database.db.tables.UserRepositoriesTable
+import aliabbas.com.userrepositories.shared.domain.domain_user_home.domain.repository.UserRepository
+import aliabbas.com.userrepositories.shared.result.ApiResponse
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class FavouriteRepositoryUseCaseImpl @Inject constructor(
     private var userRepository: UserRepository
-)  {
-    suspend operator fun invoke(userRepositoriesModel: UserRepositoriesTable): Int {
-        return userRepository.makeRepositoryFavourite(userRepositoriesModel)
+) {
+    suspend operator fun invoke(
+        userRepositoriesModel: UserRepositoriesTable,
+        _listUserRepositories: MutableStateFlow<ApiResponse>
+    ): Int {
+        val execute = userRepository.makeRepositoryFavourite(userRepositoriesModel)
+        ((_listUserRepositories.value as ApiResponse.ApiResponseSuccess).responseData as List<UserRepositoriesTable>).first {
+            it.fullName.contentEquals(userRepositoriesModel.fullName)
+        }.isFavourite = execute
+        return execute
     }
 
     // here call the specific repo and inject this use-case then into viewModel

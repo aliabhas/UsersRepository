@@ -98,7 +98,6 @@ class UserRepositoriesFragment : Fragment() {
                 },
                 onFavouriteClicked = {
                     userRepositoriesViewModel.favouriteRepository(it)
-                    userRepositoriesViewModel.updateFlow(it)
                 },
                 onHideRepositoryClicked = {
                     userRepositoriesViewModel.hideUnHideRepository(it)
