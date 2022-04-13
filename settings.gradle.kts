@@ -13,8 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "UsersRepository"
-include ':app'
-include ':shared'
-include ':central'
-include ':model'
-include ':database'
+include (":app",":shared", ":model", ":database")
