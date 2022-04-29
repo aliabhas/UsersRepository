@@ -9,5 +9,4 @@ import dagger.hilt.android.HiltAndroidApp
  * We never have to call `component.inject(this)` as [DaggerApplication] will do that for us.
  */
 @HiltAndroidApp
-class AndroidApplication : Application() {
-}
+class AndroidApplication : Application()

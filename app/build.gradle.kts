@@ -63,27 +63,27 @@ dependencies {
     androidTestImplementation(Deps.junitTest)
     androidTestImplementation(Deps.espresso)
 
-    //Retrofit dependencies
+    // Retrofit dependencies
     implementation(Deps.retrofit2)
     implementation(Deps.gson)
     implementation(Deps.retrofitInterceptor)
 
-    //Navigation
+    // Navigation
     implementation(Deps.navigation)
     implementation(Deps.navigationUiKtx)
 
-    //Glide
+    // Glide
     implementation(Deps.glide)
     kapt(Deps.glideCompiler)
 
-    //for repeatOnLifecycle(Lifecycle.State.STARTED) for shared flow
+    // for repeatOnLifecycle(Lifecycle.State.STARTED) for shared flow
     implementation(Deps.lifecycleKtx)
 
-    //Hilt implementation
+    // Hilt implementation
     implementation(Deps.hilt)
     kapt(Deps.hiltCompiler)
 
-    //JetPack compose dependencies
+    // JetPack compose dependencies
     // Integration with activities
     implementation(Deps.jetPackCompose)
     // Compose Material Design
@@ -100,7 +100,7 @@ dependencies {
     implementation(Deps.composeLiveData)
 
 
-    //Adding dependencies on modules
+    // Adding dependencies on modules
     implementation(project(":shared"))
     implementation(project(":model"))
     implementation(project(":database"))
